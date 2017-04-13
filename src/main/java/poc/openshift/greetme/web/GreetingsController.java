@@ -4,23 +4,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 
 @Controller
 @RequestMapping("/")
 public class GreetingsController {
 
-    @Value("${greetme.server.baseurl}")
-    private String greetMeServerBaseUrl;
-
     private RestTemplate greetMeServer;
 
-    @PostConstruct
-    public void init() {
+    public GreetingsController(@Value("${greetme.server.baseurl}") String greetMeServerBaseUrl) {
         this.greetMeServer = new RestTemplateBuilder().rootUri(greetMeServerBaseUrl).build();
     }
 
