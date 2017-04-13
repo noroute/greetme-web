@@ -26,14 +26,14 @@ public class GreetingsController {
     public String addGreeting(@ModelAttribute Person person, Model model) {
         greetMeServer.postForObject("/greetings", person, Greeting.class);
         model.addAttribute("greetings", getGreetingsFromServer());
-        return "greeting";
+        return "greetings";
     }
 
     @GetMapping
     public String getGreetings(Model model) {
         model.addAttribute("person", new Person(""));
         model.addAttribute("greetings", getGreetingsFromServer());
-        return "greeting";
+        return "greetings";
     }
 
     private Collection<Greeting> getGreetingsFromServer() {
