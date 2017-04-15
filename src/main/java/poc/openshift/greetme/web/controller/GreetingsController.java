@@ -1,4 +1,4 @@
-package poc.openshift.greetme.web;
+package poc.openshift.greetme.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

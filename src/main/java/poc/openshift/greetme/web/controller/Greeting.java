@@ -1,4 +1,4 @@
-package poc.openshift.greetme.web;
+package poc.openshift.greetme.web.controller;
 
 import lombok.Value;
 
