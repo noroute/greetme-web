@@ -1,7 +1,6 @@
 package poc.openshift.greetme.web;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +17,9 @@ public class GreetingsController {
 
     private RestTemplate greetMeServer;
 
-    public GreetingsController(@Value("${greetme.server.baseurl}") String greetMeServerBaseUrl) {
-        this.greetMeServer = new RestTemplateBuilder().rootUri(greetMeServerBaseUrl).build();
+    @Autowired
+    public GreetingsController(RestTemplate greetMeServer) {
+        this.greetMeServer = greetMeServer;
     }
 
     @PostMapping
