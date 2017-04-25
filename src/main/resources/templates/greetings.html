@@ -6,6 +6,7 @@
 <body>
     <form action="#" th:action="@{/}" th:object="${person}" method="post">
         <p>Your name: <input type="text" th:field="*{name}" /></p>
+        <p>Your native language (as ISO 639-1 language code): <input type="text" th:field="*{nativeLanguageCode}"/></p>
         <p><input type="submit" value="Submit" /></p>
     </form>
     <ul>

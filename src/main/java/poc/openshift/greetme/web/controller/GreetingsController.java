@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/")
@@ -31,14 +32,14 @@ public class GreetingsController {
 
     @GetMapping
     public String getGreetings(Model model) {
-        model.addAttribute("person", new Person(""));
+        model.addAttribute("person", new Person("", Locale.ENGLISH.getLanguage()));
         model.addAttribute("greetings", getGreetingsFromServer());
         return "greetings";
     }
 
     private Collection<Greeting> getGreetingsFromServer() {
         @SuppressWarnings("unchecked")
-        Collection greetings = greetMeServer.getForObject("/greetings", Collection.class);
+        Collection<Greeting> greetings = greetMeServer.getForObject("/greetings", Collection.class);
         return greetings;
     }
 }
