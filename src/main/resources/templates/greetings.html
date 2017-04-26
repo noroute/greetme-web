@@ -5,9 +5,15 @@
 </head>
 <body>
     <form action="#" th:action="@{/}" th:object="${person}" method="post">
-        <p>Your name: <input type="text" th:field="*{name}" /></p>
-        <p>Your native language (as ISO 639-1 language code): <input type="text" th:field="*{nativeLanguageCode}"/></p>
-        <p><input type="submit" value="Submit" /></p>
+        <p>My name: <input type="text" th:field="*{name}" /></p>
+        <p>I am speaking: <select th:field="*{nativeLanguageCode}">
+                              <option th:each="locale : ${locales}"
+                                      th:value="${locale.getLanguage()}"
+                                      th:text="${locale.getDisplayLanguage(T(java.util.Locale).ENGLISH)}">
+                              </option>
+                          </select>
+        </p>
+        <p><input type="submit" value="Greet Me!" /></p>
     </form>
     <ul>
         <li th:each="greeting : ${greetings}" th:text="${greeting.message}"></li>

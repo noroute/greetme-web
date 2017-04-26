@@ -10,11 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/")
 public class GreetingsController {
+
+    private static final List<Locale> ALL_LOCALES = Stream.of(Locale.getISOLanguages())
+            .map(Locale::forLanguageTag)
+            .sorted(Comparator.comparing(o -> o.getDisplayLanguage(Locale.ENGLISH)))
+            .collect(Collectors.toList());
 
     private RestTemplate greetMeServer;
 
@@ -26,20 +35,25 @@ public class GreetingsController {
     @PostMapping
     public String addGreeting(@ModelAttribute Person person, Model model) {
         greetMeServer.postForObject("/greetings", person, Greeting.class);
-        model.addAttribute("greetings", getGreetingsFromServer());
+        addGreetingsAndLocalesToModel(model);
         return "greetings";
     }
 
-    @GetMapping
-    public String getGreetings(Model model) {
-        model.addAttribute("person", new Person("", Locale.ENGLISH.getLanguage()));
+    private void addGreetingsAndLocalesToModel(Model model) {
         model.addAttribute("greetings", getGreetingsFromServer());
-        return "greetings";
+        model.addAttribute("locales", ALL_LOCALES);
     }
 
     private Collection<Greeting> getGreetingsFromServer() {
         @SuppressWarnings("unchecked")
         Collection<Greeting> greetings = greetMeServer.getForObject("/greetings", Collection.class);
         return greetings;
+    }
+
+    @GetMapping
+    public String getGreetings(Model model) {
+        addGreetingsAndLocalesToModel(model);
+        model.addAttribute("person", new Person("Bob", Locale.ENGLISH.getLanguage()));
+        return "greetings";
     }
 }
