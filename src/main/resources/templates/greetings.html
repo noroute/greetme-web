@@ -5,7 +5,7 @@
 </head>
 <body>
     <form action="#" th:action="@{/}" th:object="${person}" method="post">
-        <p>My name: <input type="text" th:field="*{name}" /></p>
+        <p>My name is: <input type="text" th:field="*{name}" /></p>
         <p>I am speaking: <select th:field="*{nativeLanguageCode}">
                               <option th:each="locale : ${locales}"
                                       th:value="${locale.getLanguage()}"
