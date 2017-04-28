@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
+import poc.openshift.greetme.web.client.GreetMeServerClient;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -25,29 +24,23 @@ public class GreetingsController {
             .sorted(Comparator.comparing(o -> o.getDisplayLanguage(Locale.ENGLISH)))
             .collect(Collectors.toList());
 
-    private RestTemplate greetMeServer;
+    private GreetMeServerClient greetMeServerClient;
 
     @Autowired
-    public GreetingsController(RestTemplate greetMeServer) {
-        this.greetMeServer = greetMeServer;
+    public GreetingsController(GreetMeServerClient greetMeServerClient) {
+        this.greetMeServerClient = greetMeServerClient;
     }
 
     @PostMapping
     public String addGreeting(@ModelAttribute Person person, Model model) {
-        greetMeServer.postForObject("/greetings", person, Greeting.class);
+        greetMeServerClient.postPersonToGreet(person);
         addGreetingsAndLocalesToModel(model);
         return "greetings";
     }
 
     private void addGreetingsAndLocalesToModel(Model model) {
-        model.addAttribute("greetings", getGreetingsFromServer());
+        model.addAttribute("greetings", greetMeServerClient.getGreetings());
         model.addAttribute("locales", ALL_LOCALES);
-    }
-
-    private Collection<Greeting> getGreetingsFromServer() {
-        @SuppressWarnings("unchecked")
-        Collection<Greeting> greetings = greetMeServer.getForObject("/greetings", Collection.class);
-        return greetings;
     }
 
     @GetMapping
