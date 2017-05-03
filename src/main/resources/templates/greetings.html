@@ -7,7 +7,7 @@
     <form action="#" th:action="@{/}" th:object="${person}" method="post">
         <p>My name is: <input type="text" th:field="*{name}" /></p>
         <p>I am speaking: <select th:field="*{nativeLanguageCode}">
-                              <option th:each="locale : ${locales}"
+                              <option th:each="locale : ${allLocales}"
                                       th:value="${locale.getLanguage()}"
                                       th:text="${locale.getDisplayLanguage(T(java.util.Locale).ENGLISH)}">
                               </option>
@@ -15,7 +15,10 @@
         </p>
         <p><input type="submit" value="Greet Me!" /></p>
     </form>
-    <ul>
+    <ul th:unless="${#lists.isEmpty(errors)}">
+        <li th:each="error : ${errors}" th:text="${error.toString()}"></li>
+    </ul>
+    <ul th:unless="${#lists.isEmpty(greetings)}">
         <li th:each="greeting : ${greetings}" th:text="${greeting.message}"></li>
     </ul>
 </body>
