@@ -5,13 +5,18 @@
 </head>
 <body>
     <form action="#" th:action="@{/}" th:object="${person}" method="post">
-        <p>My name is: <input type="text" th:field="*{name}" /></p>
-        <p>I am speaking: <select th:field="*{nativeLanguageCode}">
+        <p>
+            My name is: <input type="text" th:field="*{name}" />
+            <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></label>
+        </p>
+        <p>
+            I am speaking: <select th:field="*{nativeLanguageCode}">
                               <option th:each="locale : ${allLocales}"
                                       th:value="${locale.getLanguage()}"
                                       th:text="${locale.getDisplayLanguage(T(java.util.Locale).ENGLISH)}">
                               </option>
                           </select>
+            <label th:if="${#fields.hasErrors('nativeLanguageCode')}" th:errors="*{nativeLanguageCode}"></label>
         </p>
         <p><input type="submit" value="Greet Me!" /></p>
     </form>

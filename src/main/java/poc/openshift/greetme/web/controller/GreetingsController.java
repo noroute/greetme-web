@@ -3,11 +3,14 @@ package poc.openshift.greetme.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import poc.openshift.greetme.web.client.ErrorObject;
 import poc.openshift.greetme.web.client.GreetMeServerClient;
 
+import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,7 +71,11 @@ public class GreetingsController {
     }
 
     @PostMapping
-    public String addGreeting(@ModelAttribute Person person, RedirectAttributes redirectAttributes) {
+    public ModelAndView addGreeting(@Valid @ModelAttribute Person person, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("greetings", "allLocales", ALL_LOCALES);
+        }
+
         redirectAttributes.addFlashAttribute(person);
 
         Object response = greetMeServerClient.postPersonToGreet(person);
@@ -76,6 +83,6 @@ public class GreetingsController {
             redirectAttributes.addFlashAttribute("errors", Arrays.asList((ErrorObject<?>) response));
         }
 
-        return "redirect:/";
+        return new ModelAndView("redirect:/");
     }
 }
