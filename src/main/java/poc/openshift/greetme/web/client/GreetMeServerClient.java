@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -40,7 +42,8 @@ public class GreetMeServerClient {
     }
 
     public Object getGreetings() {
-        Supplier<Object> getGreetingsCall = () -> serverTemplate.getForObject(greetingsResourceUrl, Collection.class);
+        Supplier<Object> getGreetingsCall = () -> serverTemplate.exchange(greetingsResourceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Greeting>>() {
+        }).getBody();
         return callGreetMeServerWithExceptionHandling(getGreetingsCall, "all greetings");
     }
 
