@@ -56,6 +56,7 @@ public class GreetingsController {
                 model.addAttribute("errors", Arrays.asList(error));
             }
             else {
+                @SuppressWarnings("unchecked")
                 List<ErrorObject<?>> errorsFromPostRequest = (List<ErrorObject<?>>) model.asMap().get("errors");
                 List<ErrorObject<?>> errors = new ArrayList<>(errorsFromPostRequest);
                 errors.add(error);
@@ -63,7 +64,9 @@ public class GreetingsController {
             }
             return Optional.empty();
         }
-        return Optional.of((List<Greeting>) response);
+        @SuppressWarnings("unchecked")
+        List<Greeting> greetings = (List<Greeting>) response;
+        return Optional.of(greetings);
     }
 
     private boolean isErrorObject(Object response) {

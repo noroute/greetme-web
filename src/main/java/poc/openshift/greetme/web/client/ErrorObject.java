@@ -23,7 +23,9 @@ public class ErrorObject<T> {
 
     public ErrorObject(RestClientException e) {
         errorMessage = "Could not communicate with GreetMe server";
-        errorDetails = (T) e.getMessage();
+        @SuppressWarnings("unchecked")
+        T message = (T) e.getMessage();
+        errorDetails = message;
         errorId = UUID.randomUUID().toString();
     }
 }
