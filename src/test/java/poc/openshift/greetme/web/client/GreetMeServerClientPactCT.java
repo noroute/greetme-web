@@ -17,8 +17,9 @@ import poc.openshift.greetme.web.controller.Greeting;
 import poc.openshift.greetme.web.controller.Person;
 
 import java.util.Arrays;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -28,8 +29,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class GreetMeServerClientPactCT {
 
     private static final int DEFAULT_PORT = 8080;
-    private static final Map<String, String> CONTENT_TYPE_IS_APPLICATION_JSON_UTF_8_HEADER = Maps.newHashMap(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE);
     private static final String GREETINGS_RESOURCE_URL = "/greetings";
+
+    private static final Map<String, String> CONTENT_TYPE_IS_APPLICATION_JSON_UTF_8_HEADER = Maps.newHashMap(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE);
+
+    private static final String SOME_ERROR_ID = UUID.randomUUID().toString();
 
     private GreetMeServerClient greetMeServerClient = new GreetMeServerClient("http://localhost:" + DEFAULT_PORT, GREETINGS_RESOURCE_URL, new ObjectMapper());
 
@@ -64,6 +68,33 @@ public class GreetMeServerClientPactCT {
     }
 
     @Pact(consumer = "greetme_web_consumer")
+    public PactFragment serverRespondsWithBadRequestWhenValidationFailed(PactDslWithProvider builder) {
+        DslPart personWithInvalidLanuageAsJson = new PactDslJsonBody()
+                .stringValue("name", "Mallory")
+                .stringValue("nativeLanguageCode", "invalidLanguageCode");
+
+        DslPart errorObjectAsJson = new PactDslJsonBody()
+                .stringValue("error_message", "Validation failed")
+                .array("error_details")
+                .stringValue("nativeLanguageCode must be an ISO 639 language code")
+                .closeArray()
+                .asBody()
+                .uuid("error_id", SOME_ERROR_ID);
+
+        return builder
+                .uponReceiving("POST /greetings responds with Bad Request when validation failed")
+                .method("POST")
+                .path(GREETINGS_RESOURCE_URL)
+                .headers(Maps.newHashMap(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+                .body(personWithInvalidLanuageAsJson)
+                .willRespondWith()
+                .headers(CONTENT_TYPE_IS_APPLICATION_JSON_UTF_8_HEADER)
+                .status(400)
+                .body(errorObjectAsJson)
+                .toFragment();
+    }
+
+    @Pact(consumer = "greetme_web_consumer")
     public PactFragment serverRespondsWithAtLeastOneGreeting(PactDslWithProvider builder) {
         DslPart greetingsArrayAsJson = PactDslJsonArray.arrayMinLike(1)
                 .id("id", 2l)
@@ -71,7 +102,7 @@ public class GreetMeServerClientPactCT {
 
         return builder
                 .given("at_least_one_greeting")
-                .uponReceiving("GET /greetings returns array containing greeting(s)")
+                .uponReceiving("GET /greetings responds with array containing greeting(s)")
                 .method("GET")
                 .path(GREETINGS_RESOURCE_URL)
                 .willRespondWith()
@@ -84,11 +115,26 @@ public class GreetMeServerClientPactCT {
     @PactVerification(fragment = "serverCreatesOneGreeting")
     public void client_posts_person_to_create_greeting() throws Exception {
         // when
-        Object response = greetMeServerClient.postPersonToGreet(new Person("Bob", Locale.ENGLISH.getLanguage()));
+        Object response = greetMeServerClient.postPersonToGreet(new Person("Bob", "en"));
 
         // then
         Greeting expectedGreeting = new Greeting(1, "Hello, Bob!");
         assertThat(response).isEqualTo(expectedGreeting);
+    }
+
+    @Test
+    @PactVerification(fragment = "serverRespondsWithBadRequestWhenValidationFailed")
+    public void client_receives_validation_error_when_posted_person_contains_invalid_data() throws Exception {
+        // when
+        Object response = greetMeServerClient.postPersonToGreet(new Person("Mallory", "invalidLanguageCode"));
+
+        // then
+        ErrorObject<List<String>> expectedErrorObject = new ErrorObject<>();
+        expectedErrorObject.setErrorMessage("Validation failed");
+        expectedErrorObject.setErrorDetails(Arrays.asList("nativeLanguageCode must be an ISO 639 language code"));
+        expectedErrorObject.setErrorId(SOME_ERROR_ID);
+
+        assertThat(response).isEqualToComparingFieldByField(expectedErrorObject);
     }
 
     @Test

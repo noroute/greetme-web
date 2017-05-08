@@ -1,5 +1,6 @@
 package poc.openshift.greetme.web.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -16,6 +18,7 @@ import poc.openshift.greetme.web.controller.Person;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Component
@@ -67,8 +70,9 @@ public class GreetMeServerClient {
 
     private ErrorObject<?> deserializeJsonErrorContent(HttpStatusCodeException hsce) {
         String jsonErrorContent = hsce.getResponseBodyAsString();
+        TypeReference<?> parameterizedErrorObject = getParameterizedErrorObject(hsce);
         try {
-            return objectMapper.readValue(jsonErrorContent, ErrorObject.class);
+            return objectMapper.readValue(jsonErrorContent, parameterizedErrorObject);
         }
         catch (IOException ioe) {
             String message = "Could not deserialize JSON error content to ErrorObject: " + jsonErrorContent;
@@ -76,5 +80,15 @@ public class GreetMeServerClient {
             log.error(message, re);
             throw re;
         }
+    }
+
+    private TypeReference<?> getParameterizedErrorObject(HttpStatusCodeException hsce) {
+        if (hsce.getStatusCode().series().equals(HttpStatus.Series.CLIENT_ERROR)) {
+            return new TypeReference<ErrorObject<List<String>>>() {
+            };
+        }
+
+        return new TypeReference<ErrorObject<String>>() {
+        };
     }
 }
