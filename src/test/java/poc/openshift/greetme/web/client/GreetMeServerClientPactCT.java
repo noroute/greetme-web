@@ -82,7 +82,7 @@ public class GreetMeServerClientPactCT {
 
     @Test
     @PactVerification(fragment = "serverCreatesOneGreeting")
-    public void client_posts_person_to_create_creating() throws Exception {
+    public void client_posts_person_to_create_greeting() throws Exception {
         // when
         Object response = greetMeServerClient.postPersonToGreet(new Person("Bob", Locale.ENGLISH.getLanguage()));
 
