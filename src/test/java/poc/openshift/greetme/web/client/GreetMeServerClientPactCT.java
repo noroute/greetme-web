@@ -68,6 +68,26 @@ public class GreetMeServerClientPactCT {
     }
 
     @Pact(consumer = "greetme_web_consumer")
+    public PactFragment serverRespondsWithBadRequestWhenBodyIsEmpty(PactDslWithProvider builder) {
+        DslPart errorObjectAsJson = new PactDslJsonBody()
+                .stringValue("error_message", "Invalid JSON body")
+                .stringMatcher("error_details", "Required request body is missing.*", "Required request body is missing")
+                .uuid("error_id", SOME_ERROR_ID);
+
+        return builder
+                .uponReceiving("POST /greetings with empty body causes Bad Request (invalid JSON body)")
+                .method("POST")
+                .path(GREETINGS_RESOURCE_URL)
+                .headers(Maps.newHashMap(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+                .body("")
+                .willRespondWith()
+                .headers(CONTENT_TYPE_IS_APPLICATION_JSON_UTF_8_HEADER)
+                .status(400)
+                .body(errorObjectAsJson)
+                .toFragment();
+    }
+
+    @Pact(consumer = "greetme_web_consumer")
     public PactFragment serverRespondsWithBadRequestWhenValidationFailed(PactDslWithProvider builder) {
         DslPart personWithInvalidLanuageAsJson = new PactDslJsonBody()
                 .stringValue("name", "Mallory")
@@ -82,7 +102,7 @@ public class GreetMeServerClientPactCT {
                 .uuid("error_id", SOME_ERROR_ID);
 
         return builder
-                .uponReceiving("POST /greetings responds with Bad Request when validation failed")
+                .uponReceiving("POST /greetings with invalid person data causes Bad Request (validation failed)")
                 .method("POST")
                 .path(GREETINGS_RESOURCE_URL)
                 .headers(Maps.newHashMap(CONTENT_TYPE, APPLICATION_JSON_VALUE))
@@ -102,7 +122,7 @@ public class GreetMeServerClientPactCT {
 
         return builder
                 .given("at_least_one_greeting")
-                .uponReceiving("GET /greetings responds with array containing greeting(s)")
+                .uponReceiving("GET /greetings gets array containing greeting(s)")
                 .method("GET")
                 .path(GREETINGS_RESOURCE_URL)
                 .willRespondWith()
@@ -113,7 +133,7 @@ public class GreetMeServerClientPactCT {
 
     @Test
     @PactVerification(fragment = "serverCreatesOneGreeting")
-    public void client_posts_person_to_create_greeting() throws Exception {
+    public void client_returns_greeting_for_posted_person() throws Exception {
         // when
         Object response = greetMeServerClient.postPersonToGreet(new Person("Bob", "en"));
 
@@ -123,8 +143,23 @@ public class GreetMeServerClientPactCT {
     }
 
     @Test
+    @PactVerification(fragment = "serverRespondsWithBadRequestWhenBodyIsEmpty")
+    public void client_returns_error_for_post_request_with_empty_body() throws Exception {
+        // when
+        Object response = greetMeServerClient.postPersonToGreet(null);
+
+        // then
+        ErrorObject<String> expectedErrorObject = new ErrorObject<>();
+        expectedErrorObject.setErrorMessage("Invalid JSON body");
+        expectedErrorObject.setErrorDetails("Required request body is missing");
+        expectedErrorObject.setErrorId(SOME_ERROR_ID);
+
+        assertThat(response).isEqualToComparingFieldByField(expectedErrorObject);
+    }
+
+    @Test
     @PactVerification(fragment = "serverRespondsWithBadRequestWhenValidationFailed")
-    public void client_receives_validation_error_when_posted_person_contains_invalid_data() throws Exception {
+    public void client_returns_error_for_post_request_with_invalid_person_data() throws Exception {
         // when
         Object response = greetMeServerClient.postPersonToGreet(new Person("Mallory", "invalidLanguageCode"));
 
@@ -139,7 +174,7 @@ public class GreetMeServerClientPactCT {
 
     @Test
     @PactVerification(fragment = "serverRespondsWithAtLeastOneGreeting")
-    public void client_gets_all_greetings() throws Exception {
+    public void client_returns_all_greetings() throws Exception {
         // when
         Object response = greetMeServerClient.getGreetings();
 
