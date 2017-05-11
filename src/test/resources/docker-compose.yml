@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  greetme-server:
+    image: greetme-server
+    ports:
+      - "9090:8080"

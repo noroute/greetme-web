@@ -23,7 +23,7 @@
     <ul th:unless="${#lists.isEmpty(errors)}">
         <li th:each="error : ${errors}" th:text="${error.toString()}"></li>
     </ul>
-    <ul th:unless="${#lists.isEmpty(greetings)}">
+    <ul id="greetings" th:unless="${#lists.isEmpty(greetings)}">
         <li th:each="greeting : ${greetings}" th:text="${greeting.message}"></li>
     </ul>
 </body>
