@@ -3,9 +3,14 @@ package poc.openshift.greetme.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Slf4j
 public abstract class AbstractWebDriverTestCase {
 
@@ -16,7 +21,7 @@ public abstract class AbstractWebDriverTestCase {
         try {
             driver = new FirefoxDriver();
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             final String newLine = System.getProperty("line.separator");
             log.error(newLine
                     + newLine

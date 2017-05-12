@@ -5,20 +5,15 @@ import com.palantir.docker.compose.connection.waiting.HealthChecks;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Slf4j
 public class GreetingsControllerIT extends AbstractWebDriverTestCase {
 
