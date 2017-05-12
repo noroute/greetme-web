@@ -23,8 +23,11 @@ Then, point your browser to `http://localhost`.
 To run these integration tests, you need to have Docker, Firefox 52+, and [geckodriver](https://github.com/mozilla/geckodriver/releases)
 installed.
 
-Also, you need to have built a Docker image for _GreetMe Server_. Therefore, run `mvn clean install && docker build -t greetme-server .` in
-that other project.
+Also, you need to have built a Docker image for _GreetMe Server_. Therefore, run
+```
+mvn clean install && docker build -t greetme-server .
+```
+in that other project.
           
 Finally, you need to set the path to the _geckodriver_ in this project's _pom.xml_ - look for line:
 ```
