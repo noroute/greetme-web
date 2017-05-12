@@ -127,10 +127,10 @@
 
     <profiles>
         <!--
-          Runs the Selenium WebDriver test.
+          Runs the Selenium WebDriver tests.
           For this, you need to have Docker, Firefox 52+, and geckodriver (https://github.com/mozilla/geckodriver/releases) installed.
-          You need to have built the greetme-server project (mvn clean install) and a Docker image for it (docker build -t greetme-server .).
-          Set the path to the geckodriver below (webdriver.gecko.driver).
+          You need to have built a Docker image for greetme-server (in that other project run: mvn clean install && docker build -t greetme-server .).
+          Set the path to the geckodriver; see argument 'webdriver.gecko.driver' below.
         -->
         <profile>
             <id>selenium</id>
