@@ -22,6 +22,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+
+        <!-- Overwrite version declared by Spring Boot -->
+        <selenium.version>3.4.0</selenium.version>
     </properties>
 
     <dependencyManagement>
@@ -95,7 +98,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
-            <version>3.4.0</version>
+            <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
 
