@@ -27,6 +27,17 @@
         <selenium.version>3.4.0</selenium.version>
     </properties>
 
+    <repositories>
+        <!-- for docker-compose-rule-junit4 -->
+        <repository>
+            <id>bintray-palantir</id>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://dl.bintray.com/palantir/releases</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <!-- WebDriver needs Guava 21.0 whereas Pact declares 19.0 -->
