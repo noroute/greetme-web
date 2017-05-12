@@ -17,7 +17,7 @@ Use Docker Compose in this project to bring up both:
 ```
 docker-compose up
 ```
-Then, point you browser to `http://localhost`.
+Then, point your browser to `http://localhost`.
 
 # Run Selenium WebDriver tests
 To run these integration tests, you need to have Docker, Firefox 52+, and [geckodriver](https://github.com/mozilla/geckodriver/releases)
