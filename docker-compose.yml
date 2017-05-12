@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  greetme-server:
+    build: ../greetme-server
+
+  greetme-web:
+    build: .
+    ports:
+      - "80:8080"
+    environment:
+      - GREETME_SERVER_BASEURL=http://greetme-server:8080
