@@ -2,7 +2,6 @@ package poc.openshift.greetme.web.controller;
 
 import com.palantir.docker.compose.DockerComposeRule;
 import com.palantir.docker.compose.connection.waiting.HealthChecks;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -14,8 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@Slf4j
-public class GreetingsControllerIT extends AbstractWebDriverTestCase {
+public class GreetingsControllerSuccessCaseIT extends AbstractWebDriverTestCase {
 
     @ClassRule
     public static final DockerComposeRule DOCKER_COMPOSE_RULE = DockerComposeRule.builder()
