@@ -62,13 +62,14 @@ public class GreetingsControllerIT {
 
     @Test
     public void alice_receives_a_greeting_when_she_requests_one() throws Exception {
-        // when
+        // given
         driver.get("http://localhost:8080");
 
         WebElement nameTextField = driver.findElement(By.id("name"));
         nameTextField.clear();
         nameTextField.sendKeys("Alice");
 
+        // when
         nameTextField.submit();
         new WebDriverWait(driver, 2).until(ExpectedConditions.presenceOfElementLocated(By.id("greetings")));
 
