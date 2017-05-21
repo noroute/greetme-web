@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,7 +16,7 @@ import poc.openshift.greetme.web.controller.Greeting;
 import poc.openshift.greetme.web.controller.Person;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -46,8 +45,7 @@ public class GreetMeServerClient {
     }
 
     public Object getGreetings() {
-        Supplier<Object> getGreetingsCall = () -> serverTemplate.exchange(greetingsResourceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Collection<Greeting>>() {
-        }).getBody();
+        Supplier<Object> getGreetingsCall = () -> Arrays.asList(serverTemplate.getForObject(greetingsResourceUrl, Greeting[].class));
         return callGreetMeServerWithExceptionHandling(getGreetingsCall, "all greetings");
     }
 
