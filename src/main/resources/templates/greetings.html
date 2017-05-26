@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
+<div style="column-count: 2">
     <form action="#" th:action="@{/}" th:object="${person}" method="post">
         <p>
             My name is: <input type="text" th:field="*{name}" />
@@ -26,5 +27,6 @@
     <ul id="greetings" th:unless="${#lists.isEmpty(greetings)}">
         <li th:each="greeting : ${greetings}" th:text="${greeting.message}"></li>
     </ul>
+</div>
 </body>
 </html>
