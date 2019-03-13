@@ -9,10 +9,15 @@ provided by PaaS solutions.
 For more details, see the description of _GreetMe Server_.
 
 # Build and run
-Execute in both _GreetMe Web_ and _GreetMe Server_ project:
+Execute in this project:
 ```
 mvn clean install
 ```
+...and in _GreetMe Server_ project:
+```
+gradle clean build
+```
+
 Use Docker Compose in this project to bring up both:
 ```
 docker-compose up
@@ -25,7 +30,7 @@ installed.
 
 Also, you need to have built a Docker image for _GreetMe Server_. Therefore, run
 ```
-mvn clean install && docker build -t greetme-server .
+gradle clean build && docker build -t greetme-server .
 ```
 in that other project.
           
