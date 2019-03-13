@@ -28,19 +28,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class GreetMeServerClientPactCT {
 
-    private static final int DEFAULT_PORT = 8080;
+    private static final int SOME_PORT = 8040;
     private static final String GREETINGS_RESOURCE_URL = "/greetings";
 
     private static final Map<String, String> CONTENT_TYPE_IS_APPLICATION_JSON_UTF_8_HEADER = Maps.newHashMap(CONTENT_TYPE, APPLICATION_JSON_UTF8_VALUE);
 
     private static final String SOME_ERROR_ID = UUID.randomUUID().toString();
 
-    private GreetMeServerClient greetMeServerClient = new GreetMeServerClient("http://localhost:" + DEFAULT_PORT, GREETINGS_RESOURCE_URL, new ObjectMapper());
+    private GreetMeServerClient greetMeServerClient = new GreetMeServerClient("http://localhost:" + SOME_PORT, GREETINGS_RESOURCE_URL, new ObjectMapper());
 
     @Rule
     public PactProviderRule mockProvider = new PactProviderRule(
             "greetme_server_provider",
-            "localhost", DEFAULT_PORT,
+            "localhost", SOME_PORT,
             PactSpecVersion.V3,
             this);
 
